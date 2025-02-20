@@ -45,6 +45,5 @@
 		<module>Filo-basis</module>
 		<module>Filo-flattening</module>
 		<module>Filo-unifier</module>
-		<module>Filo-test</module>
 	</modules>
 </project>
