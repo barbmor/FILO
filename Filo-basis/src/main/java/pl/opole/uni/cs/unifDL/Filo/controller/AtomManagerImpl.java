@@ -286,7 +286,7 @@ public class AtomManagerImpl implements AtomManager {
 		} else {
 			for (Integer id : atoms.getIndices()) {
 				Atom concept = atoms.get(id);
-				if (concept.isConceptName() && ((ConceptName) concept).getConceptNameId() == conceptNameId) {
+				if (concept.isConceptName() && ((ConceptName) concept).getConceptNameId().equals(conceptNameId)) {
 					atomId = id;
 					break;
 				}
