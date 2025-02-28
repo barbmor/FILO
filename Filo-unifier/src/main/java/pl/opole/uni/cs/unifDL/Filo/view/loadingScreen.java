@@ -1,6 +1,9 @@
 package pl.opole.uni.cs.unifDL.Filo.view;
 
 import javax.swing.*;
+
+import pl.opole.uni.cs.unifDL.Filo.controller.SharedData;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,7 +37,7 @@ public class loadingScreen {
 				int result = JOptionPane.showConfirmDialog(null, "Do you want to stop computation?", "Confirm",
 						JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION) {
-					activeFrame.getSolver().setRunFlag(false);
+					SharedData.setRunFlag(false);
 				}
 			}
 		});

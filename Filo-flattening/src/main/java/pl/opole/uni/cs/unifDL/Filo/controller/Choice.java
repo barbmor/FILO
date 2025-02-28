@@ -449,7 +449,8 @@ public class Choice {
 		return 0;
 	}
 
-	public static int nextChoiceReversed(AtomManager manager) {
+	public static int nextChoiceReversed(AtomManager manager, boolean runflag) {
+		if(runflag) {
 		// next choice
 		choiceCounter++;
 		Integer[] keys = new Integer[choiceTable.size()];
@@ -489,7 +490,9 @@ public class Choice {
 
 		consChoiceCounter++;
 
-		return 1;
+		return 1;}else {
+			return -2;
+		}
 	}
 
 	public static void manualChoice(AtomManager manager) {

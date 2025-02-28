@@ -49,12 +49,6 @@ public class Solver {
 	private static int numberOfDecidedByComputingShortcuts = 0;
 	private static long solvingTime = 0;
 
-	private boolean runFlag = true;
-
-	public void setRunFlag(boolean runFlag) {
-		this.runFlag = runFlag;
-	}
-
 	public Solution getSolution() {
 		return solution;
 	}
@@ -104,7 +98,7 @@ public class Solver {
 		message = null;
 		result = null;
 		resetStatistics();
-		runFlag = true;
+		SharedData.setRunFlag(true);
 	}
 
 	private void resetStatistics() {
@@ -170,7 +164,7 @@ public class Solver {
 	}
 
 	public boolean solve1() {
-		if (runFlag) {
+		if (SharedData.getRunFlag()) {
 			long startTime = System.nanoTime();
 			result = "";
 			///////////// normalization ///////////////////
@@ -197,7 +191,7 @@ public class Solver {
 				solved = true;
 
 				for (Integer constant : atomManager.getConstants()) {
-					if (solved && runFlag) {
+					if (solved && SharedData.getRunFlag()) {
 						FiloLogger.log(Level.INFO, "Solver : Checking unifiability for constant "
 								+ renderer.getShortForm(atomManager.printConceptName(constant)));
 						solved = false;
@@ -236,19 +230,19 @@ public class Solver {
 						Solution solutionA = new Solution(atomManager);
 
 						if (Choice.isConsistent(atomManager)) {
-
+ 
 							solved = processFirstChoice(goalprovider, gengoal, solutionA);
 						}
 
-						if (!solved && runFlag) {
+						if (!solved && SharedData.getRunFlag()) {
 
 							///////////////// If first choice is not consistent////////////////////
 							int check = 0;
 							boolean termination = false;
 							///////////////// NO RECURSION ///////////////////
-							while (check != -1) {
-								check = Choice.nextChoiceReversed(atomManager);
-								if (check > 0 && runFlag) {
+							while (check >=0) {
+								check = Choice.nextChoiceReversed(atomManager, SharedData.getRunFlag());
+								if (check > 0 && SharedData.getRunFlag()) {
 
 									goal = goalprovider.setupGoal(gengoal, atomManager);
 									if (goal != null && GoalProvider.getSuccess()) {
@@ -265,7 +259,7 @@ public class Solver {
 										solved = true;
 										break;
 									} else {
-										if (goal != null && runFlag) {
+										if (goal != null && SharedData.getRunFlag()) {
 											numberOfDecidedByComputingShortcuts++;
 											termination = computeWithShortcuts(goal);
 
@@ -298,6 +292,11 @@ public class Solver {
 								result = "The problem is not unifiable. (Choices exhausted) FILO failed for constant "
 										+ renderer.getShortForm(atomManager.printConceptName(constant));
 								solved = false;
+							} else if(check == -2) {
+									FiloLogger.log(Level.FINE, "Process terminated by user");
+									result = "Process terminated by user";
+									solved = false;
+								
 							} else if (termination) {
 								FiloLogger.log(Level.FINE, "Solver : Choices checked: " + Choice.choiceCounter);
 								FiloLogger.log(Level.FINE, "Solver : Consistent choices: " + Choice.consChoiceCounter);
@@ -325,6 +324,7 @@ public class Solver {
 						}
 					}
 
+					if(SharedData.getRunFlag()) {
 					if (!solved) {
 						FiloLogger.log(Level.INFO, "Solver : Filo failed for constant "
 								+ renderer.getShortForm(atomManager.printConceptName(constant)));
@@ -335,7 +335,7 @@ public class Solver {
 						result = "The problem is unifiable";
 					}
 
-				}
+				}}
 
 			}
 
@@ -350,7 +350,7 @@ public class Solver {
 			printStats();
 		}
 
-		if (!runFlag) {
+		if (!SharedData.getRunFlag()) {
 			result = "Process terminated by user";
 			resetStatistics();
 			FiloLogger.log(Level.INFO, result);
@@ -405,7 +405,7 @@ public class Solver {
 		do {
 
 			termination = shmanager.NextShortcuts(goal.getFlatSubsumptions(), atomManager);
-		} while (shmanager.getChange() > 0 && !termination && runFlag);
+		} while (shmanager.getChange() > 0 && !termination && SharedData.getRunFlag());
 		return termination;
 	}
 
