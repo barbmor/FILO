@@ -380,7 +380,7 @@ public class Solver {
 
 		} else if (goal == null) {
 			numberOfDecidedDuringPreprocessing++;
-			System.out.println("The goal is null, rejected by Implicit Solver");
+			FiloLogger.log(Level.FINE,"The goal is null, rejected by Implicit Solver");
 			solved = false;
 
 		}
