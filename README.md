@@ -20,7 +20,7 @@ The pipeline of the project is organized into three main stages:
 
 ## Features
 
-- Supports core FL₀ constructors: conjunction, disjunction, role value restrictions, top constructor
+- Supports core FL₀ constructors: conjunction, role value restrictions, top constructor
 - Automatic flattening of nested concept expressions  
 - Efficient implementation of the unification algorithm  
 - Extensible framework for adding new heuristics or logic fragments  
