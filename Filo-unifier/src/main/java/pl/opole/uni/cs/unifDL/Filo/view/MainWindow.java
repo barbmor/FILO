@@ -204,7 +204,7 @@ public class MainWindow extends JFrame implements PropertyChangeListener {
 		String indexFilePath = resourceFolder + "index.txt";
 		try (InputStream is = getClass().getClassLoader().getResourceAsStream(indexFilePath)) {
 			if (is == null) {
-				System.err.println("Nie znaleziono pliku index.txt w " + resourceFolder);
+				System.err.println("index.txt not found in  " + resourceFolder);
 				return new String[0];
 			}
 			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
