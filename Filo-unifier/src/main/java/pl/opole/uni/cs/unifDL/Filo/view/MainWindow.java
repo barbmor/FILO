@@ -200,32 +200,25 @@ public class MainWindow extends JFrame implements PropertyChangeListener {
 
 	private String[] getResourceFileNames(String resourceFolder) {
 		ArrayList<String> fileNames = new ArrayList<>();
-		try {
-			Enumeration<URL> resources = getClass().getClassLoader().getResources(resourceFolder);
 
-			while (resources.hasMoreElements()) {
-				URL resource = resources.nextElement();
-				if ("jar".equals(resource.getProtocol())) {
-					String jarPath = resource.getPath();
-					int jarEndIndex = jarPath.indexOf("!/");
-					String jarFilePath = jarPath.substring(5, jarEndIndex);
-
-					try (java.util.jar.JarFile jarFile = new java.util.jar.JarFile(jarFilePath)) {
-						jarFile.stream()
-								.filter(entry -> entry.getName().startsWith(resourceFolder)
-										&& (entry.getName().endsWith(".owx") || entry.getName().endsWith(".owl")))
-								.forEach(entry -> fileNames.add(entry.getName().substring(resourceFolder.length())));
-					}
-				} else {
-					java.nio.file.Path folderPath = java.nio.file.Paths.get(resource.toURI());
-					java.nio.file.Files.list(folderPath)
-							.filter(path -> path.toString().endsWith(".owx") || path.toString().endsWith(".owl"))
-							.forEach(path -> fileNames.add(path.getFileName().toString()));
+		String indexFilePath = resourceFolder + "index.txt";
+		try (InputStream is = getClass().getClassLoader().getResourceAsStream(indexFilePath)) {
+			if (is == null) {
+				System.err.println("Nie znaleziono pliku index.txt w " + resourceFolder);
+				return new String[0];
+			}
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				line = line.trim();
+				if (!line.isEmpty()) {
+					fileNames.add(line);
 				}
 			}
-		} catch (IOException | java.net.URISyntaxException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		return fileNames.toArray(new String[0]);
 	}
 
